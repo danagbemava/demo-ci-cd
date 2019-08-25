@@ -1,6 +1,6 @@
 language: java
 
-script: ./mvnw clean install -B
+#script: ./mvnw clean install -B
 
 before_install:
   - chmod +x mvnw
