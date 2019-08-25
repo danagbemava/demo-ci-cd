@@ -4,6 +4,8 @@ import com.nexus.demo.domain.BasicResponse;
 import com.nexus.demo.models.Post;
 import com.nexus.demo.repo.PostRepository;
 import com.nexus.demo.services.PostService;
+import com.nexus.demo.utils.Constants;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,12 +32,12 @@ public class PostServiceImpl implements PostService {
 
         try{
             postRepository.save(post);
-            response.setCode(200);
-            response.setMessage("Post added successfully");
+            response.setCode(Constants.OPERATION_SUCCESSFUL_CODE);
+            response.setMessage(Constants.OPERATION_SUCCESSFUL_MSG);
             return response;
         }catch (Exception ex) {
-            response.setCode(500);
-            response.setMessage("An unexpected error occurred");
+            response.setCode(Constants.UNEXPECTED_ERROR_CODE);
+            response.setMessage(Constants.UNEXPECTED_ERROR_MSG);
             response.setObject(ex);
             return response;
         }
@@ -43,7 +45,28 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public BasicResponse deletePost(Long id) {
-        return null;
+        BasicResponse response = new BasicResponse();
+
+        Post findPost = postRepository.findPostById(id);
+
+        if(findPost == null) {
+            response.setMessage(Constants.ITEM_NOT_FOUND_MSG);
+            response.setCode(Constants.ITEM_NOT_FOUND_CODE);
+            return response;
+        }
+
+
+        try {
+            postRepository.delete(findPost);
+            response.setCode(Constants.OPERATION_SUCCESSFUL_CODE);
+            response.setMessage(Constants.OPERATION_SUCCESSFUL_MSG);
+        }catch (Exception ex) {
+            response.setMessage(Constants.UNEXPECTED_ERROR_MSG);
+            response.setCode(Constants.UNEXPECTED_ERROR_CODE);
+            response.setObject(ex);
+        }
+
+        return response;
     }
 
     @Override
